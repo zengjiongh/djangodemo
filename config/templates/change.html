@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div>
+        <div class="container">
+            <div class="panel panel-default col-xs-6 col-xs-offset-3">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ title }}</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        {% for form in forms %}
+                            <div class="form-group">
+                                <label>{{ form.label }}</label>
+                                {{ form }}
+                                <span style="color: red">{{ form.errors.0 }}</span>
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

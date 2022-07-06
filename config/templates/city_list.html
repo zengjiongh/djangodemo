@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-top: 10px" class="clearfix">
+            <button type="button" class="btn btn-success" id="addcity">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <a href="/city/add/" style="color: white">新建城市</a>
+            </button>
+
+            <div style="float: right;width: 200px">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="搜索" name="q" value={{ value }}>
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
+
+        </div>
+        <div class="panel panel-info" style="margin-top: 10px">
+            <!-- Default panel contents -->
+            <div class="panel-heading">城市列表</div>
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>LOGO</th>
+                    <th>城市</th>
+                    <th>人口</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in queryset %}
+                    <tr>
+                        <th>{{ item.id }}</th>
+                        <td>
+                            <img src="/media/{{ item.img }}/" style="height: 80px;width: 80px" alt="">
+                        </td>
+                        <td>{{ item.city }}</td>
+                        <td>{{ item.count }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <ul class="pagination clearfix">
+                {{ page_string }}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

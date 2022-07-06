@@ -1,0 +1,177 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">表单</div>
+            <div class="panel-body">
+                <div class="row clearfix">
+                    <form id="task_public" novalidate>
+                        {% for form in forms %}
+                            <div class="form-group col-xs-6" style="position: relative;margin-bottom: 20px">
+                                <label>{{ form.label }}</label>
+                                {{ form }}
+                                <span style="color: red; position: absolute" class="error-msg"></span>
+                            </div>
+                        {% endfor %}
+                        <div class="col-xs-12">
+                            <button type="button" class="btn btn-primary" id="ajax">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info" style="margin-top: 10px">
+            <!-- Default panel contents -->
+            <div class="panel-heading">靓号列表</div>
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>级别</th>
+                    <th>标题</th>
+                    <th>任务详情</th>
+                    <th>负责人</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in queryset %}
+                    <tr>
+                        <th>{{ item.id }}</th>
+                        <td>{{ item.get_level_display }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.detail }}</td>
+                        <td>{{ item.adminuser }}</td>
+                        <td>
+                            <a href="#" class="btn btn-primary btn-xs">编辑</a>
+                            <a href="#" class="btn btn-danger btn-xs">删除</a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <ul class="pagination clearfix">
+                {{ page_string }}
+            </ul>
+        </div>
+
+
+        <hr/>
+        <h1 style="margin-top: 1000px">Ajax学习</h1>
+
+        <h3>示例1</h3>
+        <input id="btn1" type="button" class="btn btn-primary" value="点击1"/>
+
+        <h3>示例2</h3>
+        <input type="text" placeholder="姓名" id="txtUser">
+        <input type="text" placeholder="年龄" id="txtAge">
+        <input type="button" class="btn btn-primary" value="点击2" id="btn2">
+
+        <h3>示例3</h3>
+        <form id="form_id" novalidate>
+            <input type="text" placeholder="姓名" name="name">
+            <input type="text" placeholder="年龄" name="age">
+            <input type="text" placeholder="邮箱" name="email">
+            <input type="button" class="btn btn-primary" value="点击2" id="btn3">
+        </form>
+
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            btn1Event();
+            btn2Event();
+            btn3Event();
+            ajaxEvent();
+        })
+
+        function btn1Event() {
+            $("#btn1").click(function () {
+                $.ajax({
+                    url: "/task/ajax/",
+                    type: "post",
+                    {#前端传给后端#}
+                    data: {
+                        n1: 2,
+                        n2: 3
+                    },
+                    dataType: "JSON",
+                    {#后端传前端#}
+                    success: function (res) {
+                        console.log(res)
+                    }
+                })
+            })
+        }
+
+        function btn2Event() {
+            $("#btn2").click(function () {
+                $.ajax({
+                    url: "/task/ajax/",
+                    type: "post",
+                    {#前端传给后端#}
+                    data: {
+                        name: $('#txtUser').val(),
+                        age: $('#txtAge').val()
+                    },
+                    dataType: "JSON",
+                    {#后端传前端#}
+                    success: function (res) {
+                        console.log(res)
+                    }
+                })
+            })
+        }
+
+        function btn3Event() {
+            $("#btn3").click(function () {
+                $.ajax({
+                    url: "/task/ajax/",
+                    type: "post",
+                    {#前端传给后端#}
+                    data: $('#form_id').serialize(),
+                    dataType: "JSON",
+                    {#后端传前端#}
+                    success: function (res) {
+                        console.log(res)
+                    }
+                })
+            })
+        }
+
+        function ajaxEvent() {
+            $("#ajax").click(function () {
+                $(".error-msg").empty();
+                $.ajax({
+                    url: '/task/add/',
+                    type: 'post',
+                    data: $("#task_public").serialize(),
+
+                    dataType: "JSON",
+                    success: function (res) {
+                        {#console.log(res)#}
+                        if (res.status) {
+                            alert("添加成功");
+                            location.reload()
+                        } else {
+                            $.each(res.error, function (name, data) {
+                                {#console.log(name,data);#}
+                                $("#id_" + name).next().text(data[0]);
+                            })
+                        }
+                    }
+                })
+            })
+        }
+    </script>
+{% endblock %}
